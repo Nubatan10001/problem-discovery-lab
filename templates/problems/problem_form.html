@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}新規メモ | AI Problem Discovery Lab{% endblock %}
+
+{% block content %}
+<section class="page-header compact">
+    <div>
+        <p class="eyebrow">Capture Friction</p>
+        <h1>違和感メモを登録</h1>
+        <p class="lead">完成した企画ではなく、日常で引っかかったことをそのまま書いてください。</p>
+    </div>
+</section>
+
+<form method="post" class="wide-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="form-actions">
+        <a class="secondary-button" href="{% url 'problem_list' %}">戻る</a>
+        <button class="primary-button" type="submit">保存して壁打ち開始</button>
+    </div>
+</form>
+{% endblock %}

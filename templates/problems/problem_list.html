@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}課題一覧 | AI Problem Discovery Lab{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Problem Discovery Board</p>
+        <h1>課題一覧</h1>
+        <p class="lead">違和感メモを、AIとの壁打ちで実装テーマや研究テーマへ整理します。</p>
+    </div>
+    <a class="primary-button" href="{% url 'problem_create' %}">新規メモ</a>
+</section>
+
+<section class="toolbar">
+    <form method="get" class="filter-form">
+        <input type="search" name="q" value="{{ query }}" placeholder="キーワード検索">
+        <input type="text" name="category" value="{{ category }}" placeholder="カテゴリ">
+        <select name="status">
+            <option value="">全ステータス</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button class="secondary-button" type="submit">絞り込み</button>
+    </form>
+</section>
+
+<section class="idea-grid">
+    {% for idea in ideas %}
+        <article class="idea-card">
+            <div class="card-topline">
+                <span class="status-pill">{{ idea.get_status_display }}</span>
+                <time>{{ idea.updated_at|date:'Y/m/d H:i' }}</time>
+            </div>
+            <h2><a href="{{ idea.get_absolute_url }}">{{ idea.display_title }}</a></h2>
+            <p>{{ idea.raw_memo|truncatechars:120 }}</p>
+            <dl class="meta-list">
+                <div>
+                    <dt>カテゴリ</dt>
+                    <dd>{{ idea.category|default:'未分類' }}</dd>
+                </div>
+                <div>
+                    <dt>対象</dt>
+                    <dd>{{ idea.target_user|default:'未整理' }}</dd>
+                </div>
+            </dl>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h2>まだ課題メモがありません</h2>
+            <p>日常で感じた小さな違和感を1つ登録して、AIとの壁打ちを始めましょう。</p>
+            <a class="primary-button" href="{% url 'problem_create' %}">最初のメモを作る</a>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

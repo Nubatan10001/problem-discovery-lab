@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AI Problem Discovery Lab{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="{% url 'problem_list' %}">
+                <span class="brand-mark">PD</span>
+                <span>
+                    <strong>Problem Discovery</strong>
+                    <small>AI Lab</small>
+                </span>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'problem_list' %}">課題一覧</a>
+                <a href="{% url 'problem_create' %}">新規メモ</a>
+            </nav>
+            <div class="sidebar-footer">
+                {% if user.is_authenticated %}
+                    <span class="user-chip">{{ user.username }}</span>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="text-button" type="submit">ログアウト</button>
+                    </form>
+                {% else %}
+                    <a class="text-button" href="{% url 'login' %}">ログイン</a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <main class="main">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

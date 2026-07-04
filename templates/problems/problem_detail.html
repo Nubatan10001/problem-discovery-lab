@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ idea.display_title }} | AI Problem Discovery Lab{% endblock %}
+
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">{{ idea.get_status_display }}{% if idea.category %} / {{ idea.category }}{% endif %}</p>
+        <h1>{{ idea.display_title }}</h1>
+        <p class="lead">{{ idea.raw_memo }}</p>
+    </div>
+    <form method="post" action="{% url 'structure_idea' idea.pk %}">
+        {% csrf_token %}
+        <button class="primary-button" type="submit">AIで構造化</button>
+    </form>
+</section>
+
+<section class="detail-layout">
+    <div class="conversation-panel">
+        <div class="section-title">
+            <h2>AI壁打ち</h2>
+            <span>{{ idea.messages.count }} messages</span>
+        </div>
+        <div class="thread">
+            {% for message in idea.messages.all %}
+                <div class="bubble {{ message.role }}">
+                    <span>{{ message.get_role_display }}</span>
+                    <p>{{ message.content|linebreaksbr }}</p>
+                </div>
+            {% empty %}
+                <p class="muted">まだ会話がありません。</p>
+            {% endfor %}
+        </div>
+        <form method="post" action="{% url 'add_message' idea.pk %}" class="reply-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="primary-button" type="submit">返信して次の質問へ</button>
+        </form>
+    </div>
+
+    <aside class="insight-panel">
+        <div class="section-title">
+            <h2>構造化メモ</h2>
+            <span>研究 / 試作品</span>
+        </div>
+        <dl class="insight-list">
+            <div>
+                <dt>対象ユーザー</dt>
+                <dd>{{ idea.target_user|default:'AI構造化後に表示されます' }}</dd>
+            </div>
+            <div>
+                <dt>本質的課題</dt>
+                <dd>{{ idea.core_problem|default:'AI構造化後に表示されます'|linebreaksbr }}</dd>
+            </div>
+            <div>
+                <dt>最初の試作品案</dt>
+                <dd>{{ idea.mvp_plan|default:'AI構造化後に表示されます'|linebreaksbr }}</dd>
+            </div>
+            <div>
+                <dt>研究テーマ候補</dt>
+                <dd>{{ idea.research_theme|default:'AI構造化後に表示されます'|linebreaksbr }}</dd>
+            </div>
+            <div>
+                <dt>事業化可能性</dt>
+                <dd>{{ idea.business_potential|default:'AI構造化後に表示されます'|linebreaksbr }}</dd>
+            </div>
+        </dl>
+
+        {% if idea.structured_data %}
+            <details class="raw-json">
+                <summary>詳細項目を見る</summary>
+                <dl>
+                    {% for key, value in idea.structured_data.items %}
+                        <div>
+                            <dt>{{ key }}</dt>
+                            <dd>{{ value|linebreaksbr }}</dd>
+                        </div>
+                    {% endfor %}
+                </dl>
+            </details>
+        {% endif %}
+    </aside>
+</section>
+{% endblock %}
