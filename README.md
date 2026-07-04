@@ -2,6 +2,12 @@
 
 日常の違和感メモをAIとの壁打ちで深掘りし、課題、最初の試作品案、研究テーマ、事業化可能性へ整理するDjangoアプリです。
 
+## 公開範囲について
+
+このリポジトリには、アプリケーションのソースコードとセットアップに必要な情報のみを置きます。
+
+APIキー、`.env`、ローカルDB、仮想環境、個人用の開発メモはコミットしません。
+
 ## できること
 
 - ユーザー登録とログイン
@@ -14,8 +20,12 @@
 ## 起動方法
 
 ```bash
-cd ~/Desktop/02_開発用フォルダ/02_実装提案アプリ
+git clone https://github.com/Nubatan10001/problem-discovery-lab.git
+cd problem-discovery-lab
+python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
 python manage.py runserver
 ```
 
@@ -30,6 +40,8 @@ cp .env.example .env
 ```
 
 APIキーが未設定でも、開発確認用の仮質問と仮構造化が動きます。
+
+`.env` は公開しないでください。
 
 ## テスト
 
